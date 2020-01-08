@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: test-ingress
+  namespace: ingress-nginx
+  annotations:
+    ingress.kubernetes.io/class: nginx
+    ingress.kubernetes.io/enable-cors: "true"
+    ingress.kubernetes.io/cors-allow-methods: "GET, POST"
+    ingress.kubernetes.io/rewrite-target: /
+    ingress.kubernetes.io/service-upstream: "true"
+    ingress.kubernetes.io/whitelist-source-range: "223.223.223.223/32"
+spec:
+  spec:
+  rules:
+  - http:
+      paths:
+      - path: /tea
+        backend:
+          serviceName: tea-svc
+          servicePort: 80
+      - path: /coffee
+        backend:
+          serviceName: coffee-svc
+          servicePort: 80
+
