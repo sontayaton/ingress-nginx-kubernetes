@@ -9,7 +9,22 @@ metadata:
     ingress.kubernetes.io/cors-allow-methods: "GET, POST"
     ingress.kubernetes.io/rewrite-target: /
     ingress.kubernetes.io/service-upstream: "true"
-    ingress.kubernetes.io/whitelist-source-range: "223.223.223.223/32"
+    ingress.kubernetes.io/http-snippet: |
+        set $allow_ip $remote_addr;
+        if ($http_x_forwarded_for ~ "^(\d+\.\d+\.\d+\.\d+)") {
+          set $allow_ip $1;
+        }
+        # geo $allow_ip $geo {
+        #   default        0;
+        #   10.1.0.0/16    1;
+        # }
+    # ingress.kubernetes.io/configuration-snippet: |
+    #     if($geo) {
+    #       return 302 /tea;
+    #     }
+
+
+
 spec:
   spec:
   rules:

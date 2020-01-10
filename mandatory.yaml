@@ -11,7 +11,7 @@ metadata:
 kind: ConfigMap
 apiVersion: v1
 data:
-  log-format-upstream: '$remote_addr - $request_id - [$proxy_add_x_forwarded_for] - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent" $request_length $request_time [$proxy_upstream_name] $upstream_addr $upstream_response_length $upstream_response_time $upstream_status'
+  log-format-upstream: '$remote_addr - $request_id - [allow_ip : $allow_ip] - [isallow : $isallow] - [realip_remote_addr: $realip_remote_addr] - [server_addr: $server_addr] - [upstream_addr: $upstream_addr] - [realip_remote_addr: $realip_remote_addr] -- [http_x_forwarded_for: $http_x_forwarded_for] -- [proxy_add_x_forwarded_for: $proxy_add_x_forwarded_for] - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent" $request_length $request_time [$proxy_upstream_name] $upstream_addr $upstream_response_length $upstream_response_time $upstream_status'
 metadata:
   name: nginx-configuration
   namespace: ingress-nginx
@@ -178,7 +178,7 @@ metadata:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
 spec:
-  externalTrafficPolicy: Local
+  #externalTrafficPolicy: Local
   type: NodePort
   ports:
     - name: http
