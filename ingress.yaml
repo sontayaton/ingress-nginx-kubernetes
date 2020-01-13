@@ -9,22 +9,20 @@ metadata:
     ingress.kubernetes.io/cors-allow-methods: "GET, POST"
     ingress.kubernetes.io/rewrite-target: /
     ingress.kubernetes.io/service-upstream: "true"
-    ingress.kubernetes.io/http-snippet: |
-        set $allow_ip $remote_addr;
+    ingress.kubernetes.io/configuration-snippet: |
+        set $x_forward_ip $remote_addr;
+        # filter first ip from http_x_forwarded_for if want to use last ip just change "^(\d+\.\d+\.\d+\.\d+)" to "(\d+\.\d+\.\d+\.\d+)$"
         if ($http_x_forwarded_for ~ "^(\d+\.\d+\.\d+\.\d+)") {
-          set $allow_ip $1;
+          set $x_forward_ip $1;
         }
-        # geo $allow_ip $geo {
-        #   default        0;
-        #   10.1.0.0/16    1;
-        # }
-    # ingress.kubernetes.io/configuration-snippet: |
-    #     if($geo) {
-    #       return 302 /tea;
-    #     }
 
+        if ($x_forward_ip ~* (192.168.1.2|192.168.1.3|192.168.2.*)) {
+          set $allow_ip true;
+        }
 
-
+        if ($allow_ip != true) {
+          return 403;
+        }
 spec:
   spec:
   rules:
